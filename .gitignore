@@ -1,28 +1,55 @@
-# Ignore in all directories
+# OS
 **/.DS_Store
-#**/.env
-**/.env.example
+**/Thumbs.db
+
+# Environment
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Dependencies
 **/node_modules
-**/prompts_master.md
-
-# other dependencies
 **/.pnp
-**.pnp.js
+**/.pnp.js
 
-# testing
+# Lock files
+package-lock.json
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+
+# Testing
 **/coverage
 
-# production
+# Production
 **/build
 **/dist
+**/.next
+**/.nuxt
 
-# logs
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+
+# Runtime
+**/pids
+**/*.pid
+**/*.seed
+**/*.pid.lock
 
 # IDE
 .idea
 .vscode
+*.swp
+*.swo
 
-# .env
+
+# Claude Code
+.claude/settings.json
+.claude/settings.local.json
+
+# Prisma
+**/prisma/migrations/
