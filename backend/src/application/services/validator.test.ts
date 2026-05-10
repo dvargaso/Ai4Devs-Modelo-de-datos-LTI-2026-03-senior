@@ -7,8 +7,13 @@ import {
     validateEducation,
     validateExperience,
     validateCV,
-    validateCandidateData
-} from '../validator'; 
+    validateCandidateData,
+    validatePositionStatus,
+    validateEmploymentType,
+    validateApplicationStatus,
+    validateInterviewResult,
+    validateScore,
+} from '../validator';
 
 describe('Validator Tests', () => {
     describe('validateName', () => {
@@ -168,6 +173,90 @@ describe('Validator Tests', () => {
                 fileType: ''
             };
             expect(() => validateCV(invalidCV2)).toThrow('Invalid CV data');
+        });
+    });
+
+    describe('validatePositionStatus', () => {
+        it('should accept valid status values', () => {
+            expect(() => validatePositionStatus('Draft')).not.toThrow();
+            expect(() => validatePositionStatus('Open')).not.toThrow();
+            expect(() => validatePositionStatus('Closed')).not.toThrow();
+            expect(() => validatePositionStatus('Archived')).not.toThrow();
+        });
+
+        it('should throw for invalid status values', () => {
+            expect(() => validatePositionStatus('open')).toThrow('Invalid position status');
+            expect(() => validatePositionStatus('OPEN')).toThrow('Invalid position status');
+            expect(() => validatePositionStatus('')).toThrow('Invalid position status');
+            expect(() => validatePositionStatus('Unknown')).toThrow('Invalid position status');
+        });
+    });
+
+    describe('validateEmploymentType', () => {
+        it('should accept valid employment type values', () => {
+            expect(() => validateEmploymentType('Full_time')).not.toThrow();
+            expect(() => validateEmploymentType('Part_time')).not.toThrow();
+            expect(() => validateEmploymentType('Contract')).not.toThrow();
+            expect(() => validateEmploymentType('Internship')).not.toThrow();
+        });
+
+        it('should throw for invalid employment type values', () => {
+            expect(() => validateEmploymentType('full-time')).toThrow('Invalid employment type');
+            expect(() => validateEmploymentType('FULL_TIME')).toThrow('Invalid employment type');
+            expect(() => validateEmploymentType('')).toThrow('Invalid employment type');
+        });
+    });
+
+    describe('validateApplicationStatus', () => {
+        it('should accept valid application status values', () => {
+            expect(() => validateApplicationStatus('Pending')).not.toThrow();
+            expect(() => validateApplicationStatus('Reviewing')).not.toThrow();
+            expect(() => validateApplicationStatus('Interview')).not.toThrow();
+            expect(() => validateApplicationStatus('Offered')).not.toThrow();
+            expect(() => validateApplicationStatus('Rejected')).not.toThrow();
+        });
+
+        it('should throw for invalid application status values', () => {
+            expect(() => validateApplicationStatus('pending')).toThrow('Invalid application status');
+            expect(() => validateApplicationStatus('REJECTED')).toThrow('Invalid application status');
+            expect(() => validateApplicationStatus('')).toThrow('Invalid application status');
+        });
+    });
+
+    describe('validateInterviewResult', () => {
+        it('should accept valid interview result values', () => {
+            expect(() => validateInterviewResult('Pass')).not.toThrow();
+            expect(() => validateInterviewResult('Fail')).not.toThrow();
+            expect(() => validateInterviewResult('No_show')).not.toThrow();
+        });
+
+        it('should throw for invalid interview result values', () => {
+            expect(() => validateInterviewResult('pass')).toThrow('Invalid interview result');
+            expect(() => validateInterviewResult('PASS')).toThrow('Invalid interview result');
+            expect(() => validateInterviewResult('')).toThrow('Invalid interview result');
+            expect(() => validateInterviewResult('no-show')).toThrow('Invalid interview result');
+        });
+    });
+
+    describe('validateScore', () => {
+        it('should accept boundary values 1 and 10', () => {
+            expect(() => validateScore(1)).not.toThrow();
+            expect(() => validateScore(10)).not.toThrow();
+        });
+
+        it('should accept null and undefined (optional field)', () => {
+            expect(() => validateScore(null)).not.toThrow();
+            expect(() => validateScore(undefined)).not.toThrow();
+        });
+
+        it('should throw for values outside [1, 10]', () => {
+            expect(() => validateScore(0)).toThrow('Invalid score');
+            expect(() => validateScore(11)).toThrow('Invalid score');
+            expect(() => validateScore(-1)).toThrow('Invalid score');
+        });
+
+        it('should throw for non-integer values', () => {
+            expect(() => validateScore(5.5)).toThrow('Invalid score');
         });
     });
 

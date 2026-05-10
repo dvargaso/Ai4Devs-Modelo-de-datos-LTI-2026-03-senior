@@ -1,3 +1,5 @@
+import { PositionStatus, EmploymentType, ApplicationStatus, InterviewResult } from '@prisma/client';
+
 const NAME_REGEX = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PHONE_REGEX = /^(6|7|9)\d{8}$/;
@@ -74,6 +76,37 @@ export const validateExperience = (experience: any) => {
 export const validateCV = (cv: any) => {
     if (typeof cv !== 'object' || !cv.filePath || typeof cv.filePath !== 'string' || !cv.fileType || typeof cv.fileType !== 'string') {
         throw new Error('Invalid CV data');
+    }
+};
+
+export const validatePositionStatus = (status: string) => {
+    if (!Object.values(PositionStatus).includes(status as PositionStatus)) {
+        throw new Error(`Invalid position status. Allowed: ${Object.values(PositionStatus).join(', ')}`);
+    }
+};
+
+export const validateEmploymentType = (type: string) => {
+    if (!Object.values(EmploymentType).includes(type as EmploymentType)) {
+        throw new Error(`Invalid employment type. Allowed: ${Object.values(EmploymentType).join(', ')}`);
+    }
+};
+
+export const validateApplicationStatus = (status: string) => {
+    if (!Object.values(ApplicationStatus).includes(status as ApplicationStatus)) {
+        throw new Error(`Invalid application status. Allowed: ${Object.values(ApplicationStatus).join(', ')}`);
+    }
+};
+
+export const validateInterviewResult = (result: string) => {
+    if (!Object.values(InterviewResult).includes(result as InterviewResult)) {
+        throw new Error(`Invalid interview result. Allowed: ${Object.values(InterviewResult).join(', ')}`);
+    }
+};
+
+export const validateScore = (score: number | null | undefined) => {
+    if (score === null || score === undefined) return;
+    if (!Number.isInteger(score) || score < 1 || score > 10) {
+        throw new Error('Invalid score: must be an integer between 1 and 10');
     }
 };
 

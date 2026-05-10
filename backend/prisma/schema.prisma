@@ -14,11 +14,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PositionStatus {
+  Draft
+  Open
+  Closed
+  Archived
+}
+
+enum EmploymentType {
+  Full_time
+  Part_time
+  Contract
+  Internship
+}
+
+enum ApplicationStatus {
+  Pending
+  Reviewing
+  Interview
+  Offered
+  Rejected
+}
+
+enum InterviewResult {
+  Pass
+  Fail
+  No_show
+}
+
 model Company {
-  id        Int        @id @default(autoincrement())
-  name      String     @db.VarChar(255)
-  employees Employee[]
-  positions Position[]
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(255)
+  description String?    @db.Text
+  employees   Employee[]
+  positions   Position[]
 }
 
 model Employee {
@@ -36,7 +65,8 @@ model Employee {
 
 model InterviewFlow {
   id             Int             @id @default(autoincrement())
-  description    String          @db.VarChar(255)
+  name           String          @db.VarChar(100)
+  description    String?         @db.VarChar(255)
   interviewSteps InterviewStep[]
   positions      Position[]
 }
@@ -58,6 +88,7 @@ model InterviewStep {
   orderIndex      Int
   interviews      Interview[]
 
+  @@unique([interviewFlowId, orderIndex])
   @@index([interviewFlowId])
   @@index([interviewTypeId])
 }
@@ -70,17 +101,16 @@ model Position {
   interviewFlow       InterviewFlow @relation(fields: [interviewFlowId], references: [id])
   title               String        @db.VarChar(255)
   description         String?       @db.Text
-  status              String        @db.VarChar(50)
-  isVisible           Boolean       @default(false)
-  location            String?       @db.VarChar(255)
-  jobDescription      String?       @db.Text
-  requirements        String?       @db.Text
-  responsibilities    String?       @db.Text
+  status              PositionStatus
+  isVisible           Boolean        @default(false)
+  location            String?        @db.VarChar(255)
+  jobDescription      String?        @db.Text
+  requirements        String?        @db.Text
+  responsibilities    String?        @db.Text
   salaryMin           Decimal?
   salaryMax           Decimal?
-  employmentType      String?       @db.VarChar(100)
+  employmentType      EmploymentType?
   benefits            String?       @db.Text
-  companyDescription  String?       @db.Text
   applicationDeadline DateTime?     @db.Date
   contactInfo         String?       @db.VarChar(255)
   applications        Application[]
@@ -95,11 +125,12 @@ model Application {
   position        Position    @relation(fields: [positionId], references: [id])
   candidateId     Int
   candidate       Candidate   @relation(fields: [candidateId], references: [id])
-  applicationDate DateTime    @db.Date
-  status          String      @db.VarChar(50)
-  notes           String?     @db.Text
+  applicationDate DateTime         @db.Date
+  status          ApplicationStatus
+  notes           String?          @db.Text
   interviews      Interview[]
 
+  @@unique([candidateId, positionId])
   @@index([positionId])
   @@index([candidateId])
 }
@@ -112,8 +143,8 @@ model Interview {
   interviewStep   InterviewStep @relation(fields: [interviewStepId], references: [id])
   employeeId      Int
   employee        Employee      @relation(fields: [employeeId], references: [id])
-  interviewDate   DateTime      @db.Date
-  result          String?       @db.VarChar(50)
+  interviewDate   DateTime        @db.Date
+  result          InterviewResult?
   score           Int?
   notes           String?       @db.Text
 
